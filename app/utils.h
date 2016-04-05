@@ -182,8 +182,8 @@ void split_query(const string &query, map<string, string> &dict) {
     }
 }
 
-string read_all_text(auto& stream) {
-    return { std::istreambuf_iterator<char>(stream), std::istreambuf_iterator<char>() };
+string read_all_text(istream& str) {
+    return { std::istreambuf_iterator<char>(str), std::istreambuf_iterator<char>() };
 }
 
 std::string to_lower(std::string source) {

@@ -4,7 +4,7 @@ For production:
 
 ```bash
 $ cd app/
-$ g++ main.cpp utils.h md5.h md5.cpp -std=c++14 -o ../public/index.cgi
+$ g++ main.cpp utils.h md5.h md5.cpp -std=c++11 -o ../public_html/index.cgi
 ```
 
 For development (`inotify-tools` must be installed):
@@ -12,7 +12,7 @@ For development (`inotify-tools` must be installed):
 ```
 while inotifywait -e close_write,moved_to,create ./main.cpp
     sleep 0.5
-    g++ main.cpp utils.h md5.h md5.cpp -std=c++14 -o ../public/index.cgi
+    g++ main.cpp utils.h md5.h md5.cpp -std=c++11 -o ../public/index.cgi
 end
 ```
 
