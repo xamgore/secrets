@@ -24,21 +24,28 @@ window.setInterval(() => {
 $('form').onsubmit = e => {
     if (!login.value || !pass.value) { focus(); e.preventDefault(); }};
 
-var showCursor = (node, err) => {
+var showCursor = (node) => {
     node.className = (node.selectionEnd == node.value.length ? "nocursor" : "");
-    if (err) node.className += " error";
+    if (node.hasErrorBorder) node.className += " error";
 };
+
+var showCursorFor = node => { return () => showCursor(node); };
 
 // remove red border on edit
 var noerror = node => {
     return e => {
         if (node.pval != node.value) {
-            showCursor(x, false);
-            x.pval = x.value;
+            node.hasErrorBorder = false; node.pval = node.value;
         }
+        showCursor(node);
     };
 };
-[login, pass].forEach(x => { x.pval = x.value; x.onkeyup = noerror(x); });
+
+[login, pass].forEach(x => {
+    x.pval = x.value;
+    x.onkeyup = noerror(x);
+    x.onclick = x.onfocus = showCursorFor(x);
+});
 
 // select invalid field
-$('.error').select();
+$('.error').select().hasErrorBorder = true;

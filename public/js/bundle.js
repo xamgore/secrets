@@ -1,1 +1,51 @@
-function $(o){return document.querySelector(o)}NodeList.prototype.forEach=Array.prototype.forEach;var login=$("#login"),pass=$("#pass"),submit=$("#submit"),focus=function(){login.value?pass.value?submit.focus():pass.focus():login.focus()};window.setInterval(function(){-1==[login,pass,submit].indexOf(document.activeElement)&&(null!==$(".nocursor.error")?$(".nocursor.error").select():focus())},1),$("form").onsubmit=function(o){login.value&&pass.value||(focus(),o.preventDefault())};var noerror=function(o){return function(r){o.pval!=o.value&&(o.className="nocursor",x.pval=x.value)}};[login,pass].forEach(function(o){o.pval=o.value,o.onkeyup=noerror(o)}),$(".nocursor.error").select();
+NodeList.prototype.forEach = Array.prototype.forEach;
+$ = selector => document.querySelector(selector);
+
+var login = $('#login'), pass = $('#pass'), submit = $('#submit');
+
+// intelli focus technique
+var focus = () => {
+    if (!login.value) login.focus();
+    else if (!pass.value) pass.focus();
+    else submit.focus();
+};
+
+// [login, pass, submit].forEach(x => x.onkeypress = focus);
+
+// set focus if it was lost
+window.setInterval(() => {
+    if ([login, pass, submit].indexOf(document.activeElement) == -1) {
+        if ($('.error') !== null)
+            $('.error').select();
+        else focus();
+    }}, 1);
+
+// prevent form submit when fields are empty
+$('form').onsubmit = e => {
+    if (!login.value || !pass.value) { focus(); e.preventDefault(); }};
+
+var showCursor = (node) => {
+    node.className = (node.selectionEnd == node.value.length ? "nocursor" : "");
+    if (node.hasErrorBorder) node.className += " error";
+};
+
+var showCursorFor = node => { return () => showCursor(node); };
+
+// remove red border on edit
+var noerror = node => {
+    return e => {
+        if (node.pval != node.value) {
+            node.hasErrorBorder = false; node.pval = node.value;
+        }
+        showCursor(node);
+    };
+};
+
+[login, pass].forEach(x => {
+    x.pval = x.value;
+    x.onkeyup = noerror(x);
+    x.onclick = x.onfocus = showCursorFor(x);
+});
+
+// select invalid field
+$('.error').select().hasErrorBorder = true;
