@@ -1,3 +1,9 @@
+### Task
+
+Make a web-page with an authorization form (login & password).
+If password is valid, then show any secret about user, otherwise ban user by IP.
+Only 3 attempts per minute are available.
+
 ### Compilation
 
 For production:
