@@ -91,13 +91,14 @@ void show_ban() {
     ifstream f_content(root + "/resource/views/secret.twig");
     string content{ read_all_text(f_content) };
 
-    ifstream f_secret(root + "/resource/views/banned.twig");
+    ifstream f_secret(root + "/resource/views/banned.html");
     string secret{ read_all_text(f_secret) };
 
     time_t ban_time = 60 - (time(nullptr) - last_visit(REMOTE_ADDR));
-    string minutes = { ban_time == 1 ? " second" : " seconds" };
+    string minutes = ban_time == 1 ? " second" : " seconds";
 
-    replace_string(secret, "{{ time }}", to_string(ban_time).append(minutes));
+    replace_string(secret, "{{ ban_time }}", to_string(ban_time) + minutes);
+    replace_string(secret, "{{ time }}", to_string(ban_time));
     replace_string(content, "{{ content }}", secret);
     cout << "Content-Type: text/html; charset=utf-8\n\n" << content;
 }
@@ -125,8 +126,11 @@ int main() {
         if (users.find(to_lower(login)) == users.end()) {
             authorize(login, password, true);
         } else if (users[to_lower(login)] != md5(password)) {
-            authorize(login, password, false, true);
             update_visits(REMOTE_ADDR);
+
+            if (ip_is_banned(REMOTE_ADDR))
+                show_ban();
+                else authorize(login, password, false, true);
         } else show_secret(login);
     };
 

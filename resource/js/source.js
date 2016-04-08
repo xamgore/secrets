@@ -1,5 +1,5 @@
 NodeList.prototype.forEach = Array.prototype.forEach;
-$ = (selector) => document.querySelector(selector);
+$ = selector => document.querySelector(selector);
 
 var login = $('#login'), pass = $('#pass'), submit = $('#submit');
 
@@ -15,8 +15,8 @@ var focus = () => {
 // set focus if it was lost
 window.setInterval(() => {
     if ([login, pass, submit].indexOf(document.activeElement) == -1) {
-        if ($('.nocursor.error') !== null)
-            $('.nocursor.error').select();
+        if ($('.error') !== null)
+            $('.error').select();
         else focus();
     }}, 1);
 
@@ -24,11 +24,16 @@ window.setInterval(() => {
 $('form').onsubmit = e => {
     if (!login.value || !pass.value) { focus(); e.preventDefault(); }};
 
+var showCursor = (node, err) => {
+    node.className = (node.selectionEnd == node.value.length ? "nocursor" : "");
+    if (err) node.className += " error";
+};
+
 // remove red border on edit
-var noerror = (node) => {
-    return (e) => {
+var noerror = node => {
+    return e => {
         if (node.pval != node.value) {
-            node.className = "nocursor";
+            showCursor(x, false);
             x.pval = x.value;
         }
     };
@@ -36,4 +41,4 @@ var noerror = (node) => {
 [login, pass].forEach(x => { x.pval = x.value; x.onkeyup = noerror(x); });
 
 // select invalid field
-$('.nocursor.error').select();
+$('.error').select();

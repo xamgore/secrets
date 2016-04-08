@@ -1,0 +1,20 @@
+<span style="text-align:center">
+    Sorry, you was banned for
+    <span id="time" style="display:inline-block">{{ ban_time }}.</span>
+</span>
+<br>
+<span style="font-size:45%">
+    Write an <a href="https://github.com/xamgore/secrets/issues" style="color:#268bd2;text-decoration:none;">
+        issue</a>, if you wanna get a secret place.
+</span>
+
+<script>
+    var time = {{ time }};
+
+    window.setInterval(() => {
+        time <= 0
+            ? location.reload(true)
+            : document.getElementById('time').innerHTML =
+                time + (time-- == 1 ? " second." : " seconds.")
+    }, 1000);
+</script>
